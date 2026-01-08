@@ -26,24 +26,16 @@
 
 package org.cdsframework.ice.service.configurations;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Date;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.cdsframework.ice.config.IceProperties;
 import org.cdsframework.ice.util.KnowledgeModuleUtils;
-import org.drools.model.codegen.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
 import org.opencds.config.api.KnowledgeLoader;
 import org.opencds.config.api.model.KMId;
 import org.opencds.config.api.model.KnowledgeModule;
@@ -57,8 +49,8 @@ public class IceKnowledgeLoader implements KnowledgeLoader<InputStream, IceKnowl
 {
     @Setter
     private static IceProperties iceProperties;
-    @Setter
-    private static Path droolsPath;
+
+    // droolsPath removed - no longer needed
 
     @Override
     public IceKnowledgePackage loadKnowledgePackage(final KnowledgeModule knowledgeModule,
@@ -94,41 +86,27 @@ public class IceKnowledgeLoader implements KnowledgeLoader<InputStream, IceKnowl
             lRequestedKmId = "gov.nyc.cir^ICE^1.0.0";
             lKMId = KMIdImpl.create("gov.nyc.cir", "ICE", "1.0.0");
         }
-        log.debug("Initializing ICE3 Drools KnowledgeBase - Knowledge Module {}", lRequestedKmId);
+        log.debug("Loading pre-compiled ICE Drools KJAR - Knowledge Module {}", lRequestedKmId);
 
         final String lBaseRulesScopingKmId =
-                KnowledgeModuleUtils.returnStringRepresentationOfKnowledgeModuleName(iceProperties.getIceBaseRulesScopingEntityId(),
-                        lKMId.getBusinessId(), iceProperties.getIceBaseRulesVersion());
+                KnowledgeModuleUtils.returnStringRepresentationOfKnowledgeModuleName(
+                        iceProperties.getIceBaseRulesScopingEntityId(),
+                        lKMId.getBusinessId(),
+                        iceProperties.getIceBaseRulesVersion());
 
         final KieServices kieServices = KieServices.Factory.get();
-        final KieFileSystem kfs = kieServices.newKieFileSystem();
 
-        try (final Stream<Path> stream = Files.find(droolsPath, Integer.MAX_VALUE, (p, a) -> a.isRegularFile()))
-        {
-            for (final Path path : stream.toList())
-            {
-                final ResourceType resourceType = ResourceType.determineResourceType(path.getFileName().toString());
-                if (resourceType == null)
-                    continue;
+        // Load pre-compiled KJAR using its Maven coordinates
+        final ReleaseId releaseId = kieServices.newReleaseId(
+                "org.cdsframework",
+                "ice-rules-kjar",
+                "4.0.1-SNAPSHOT");
 
-                final Resource lDslrFile = kieServices.getResources().newInputStreamResource(Files.newInputStream(path));
-                lDslrFile.setTargetPath(droolsPath.relativize(path).toString());
-                lDslrFile.setResourceType(resourceType);
-                kfs.write(lDslrFile);
-            }
-        }
-        catch (final IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        final KieBase kieBase = kieContainer.getKieBase();
 
-        final KieBuilder kieBuilder = kieServices.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
-        if (kieBuilder.getResults().hasMessages(Message.Level.ERROR))
-            throw new RuntimeException("KieBuilder had errors: " + kieBuilder.getResults().getMessages());
-
-        final KieBase kieBase = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId()).getKieBase();
-
-        log.debug("Date/Time {}; Base Rules Scoping Km Id: {}; Initialized: {}", lRequestedKmId, lBaseRulesScopingKmId, new Date());
+        log.debug("Date/Time {}; Base Rules Scoping Km Id: {}; Loaded from KJAR: {}",
+                lRequestedKmId, lBaseRulesScopingKmId, new Date());
 
         return new IceKnowledgePackage(lKMId, kieBase);
     }

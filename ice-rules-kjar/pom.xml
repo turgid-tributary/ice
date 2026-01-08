@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cdsframework</groupId>
+        <artifactId>ice-parent</artifactId>
+        <version>4.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ice-rules-kjar</artifactId>
+    <packaging>kjar</packaging>
+    <name>ICE Rules Knowledge Module</name>
+
+    <dependencies>
+        <!-- Drools runtime -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-engine-classic</artifactId>
+        </dependency>
+
+        <!-- Drools model compiler - needed for executable model generation -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-compiler</artifactId>
+            <version>${drools.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ICE service classes (for DRL imports) -->
+        <dependency>
+            <groupId>org.cdsframework</groupId>
+            <artifactId>opencds-ice-service</artifactId>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- OpenCDS VMR (for DRL imports) -->
+        <dependency>
+            <groupId>org.opencds</groupId>
+            <artifactId>opencds-vmr-evaluation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- OpenCDS evaluation -->
+        <dependency>
+            <groupId>org.opencds</groupId>
+            <artifactId>opencds-evaluation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-maven-plugin</artifactId>
+                <version>${drools.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generateModel>YES</generateModel>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

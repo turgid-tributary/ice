@@ -865,7 +865,7 @@ public class OpenCdsConfig
 
     @Bean
     public ConfigurationService configurationService(final IceProperties iceProperties, final Path configPath,
-            final Path droolsPath, final VersionData versionData, final ConfigData configData, final ConfigStrategy configStrategy)
+            final VersionData versionData, final ConfigData configData, final ConfigStrategy configStrategy)
     {
         log.info("Setting fire limit to {}", iceProperties.getFireLimit());
         System.setProperty("org.jbpm.rule.task.firelimit", Integer.toString(iceProperties.getFireLimit()));
@@ -873,7 +873,7 @@ public class OpenCdsConfig
         ICEDecisionEngineDSSEvaluationAdapter.setIceProperties(iceProperties);
 
         IceKnowledgeLoader.setIceProperties(iceProperties);
-        IceKnowledgeLoader.setDroolsPath(droolsPath);
+        // droolsPath removed - rules now loaded from pre-compiled KJAR
 
         ICESupportingDataLoaderPlugin.setIceProperties(iceProperties);
         ICESupportingDataLoaderPlugin.setConfigPath(configPath);

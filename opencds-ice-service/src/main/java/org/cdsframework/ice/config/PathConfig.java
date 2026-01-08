@@ -21,9 +21,5 @@ public class PathConfig
         return Path.of(resourceLoader.getResource("classpath:config").getURI());
     }
 
-    @Bean
-    public Path droolsPath() throws IOException
-    {
-        return Path.of(resourceLoader.getResource("classpath:drools").getURI());
-    }
+    // droolsPath bean removed - rules now loaded from pre-compiled KJAR
 }

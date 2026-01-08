@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+    <kbase name="iceKBase" packages="knowledgeCommon, knowledgeModule" default="true">
+        <ksession name="iceKSession" default="true"/>
+    </kbase>
+</kmodule>

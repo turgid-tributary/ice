@@ -3,11 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cdsframework</groupId>
-    <artifactId>opencds-decision-support-service</artifactId>
-    <packaging>war</packaging>
+    <artifactId>ice-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>4.0.1-SNAPSHOT</version>
 
-    <name>Immunization Calculation Engine</name>
-    <description>ICE Implementation of DSS Evaluation Operation using Drools</description>
+    <name>ICE Parent</name>
+    <description>Immunization Calculation Engine - Multi-Module Parent</description>
+
+    <modules>
+        <module>ice-rules-kjar</module>
+        <module>opencds-ice-service</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -21,6 +27,7 @@
         <java.version>25</java.version>
         <maven.compiler.proc>full</maven.compiler.proc>
 
+        <spring-boot.version>4.0.1</spring-boot.version>
         <opencds.version>7.0.1</opencds.version>
 
         <drools.version>10.1.0</drools.version>
@@ -43,451 +50,27 @@
                 <version>10.1.0-20250814</version>
             </dependency>
             <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-engine-classic</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opencds</groupId>
+                <artifactId>opencds-vmr-evaluation</artifactId>
+                <version>${opencds.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opencds</groupId>
+                <artifactId>opencds-evaluation</artifactId>
+                <version>${opencds.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.javaparser</groupId>
                 <artifactId>javaparser-core</artifactId>
                 <version>3.27.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web-services</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tools.jackson.module</groupId>
-            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-config-api</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang3</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.servlet-api</artifactId>
-                    <groupId>jakarta.servlet</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-jcl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-impl</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-ri</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <groupId>jakarta.xml.bind</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-config-file</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-config-rest</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.ws.rs-api</artifactId>
-                    <groupId>jakarta.ws.rs</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-config-service</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-evaluation</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-dss-evaluation</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.annotation-api</artifactId>
-                    <groupId>jakarta.annotation</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.jws-api</artifactId>
-                    <groupId>jakarta.jws</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <groupId>jakarta.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.xml.ws-api</artifactId>
-                    <groupId>jakarta.xml.ws</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opencds</groupId>
-            <artifactId>opencds-vmr-evaluation</artifactId>
-            <version>${opencds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-slf4j2-impl</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>byte-buddy</artifactId>
-                    <groupId>net.bytebuddy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-api</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-core</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>objenesis</artifactId>
-                    <groupId>org.objenesis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <groupId>jakarta.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-impl</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-ri</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-engine-classic</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>jbpm-bpmn2</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>io.github.git-commit-id</groupId>
-                <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>${git-commit-id-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <commitIdGenerationMode>full</commitIdGenerationMode>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb</groupId>
-                <artifactId>jaxb-maven-plugin</artifactId>
-                <version>${jaxb-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>jaxb-generate-cdsframework</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <args>
-                                <arg>-extension</arg>
-                            </args>
-                            <schemaDirectory>src/main/resources/xml</schemaDirectory>
-                            <schemaIncludes>
-                                <include>*.xsd</include>
-                            </schemaIncludes>
-                            <bindingIncludes>
-                                <include>*.xjb.xml</include>
-                            </bindingIncludes>
-                            <generateDirectory>${project.build.directory}/generated-sources/xml</generateDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <extension>true</extension>
-                    <verbose>true</verbose>
-                    <markGenerated>true</markGenerated>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
